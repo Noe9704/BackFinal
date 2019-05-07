@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
-var datos = require('../config.js')
+const config = require('../config.js')
 
-var connectionURL = datos.connectionURL
+var connectionURL = config.connectionURL
 
 mongoose.connect( connectionURL, {
   useNewUrlParser: true,

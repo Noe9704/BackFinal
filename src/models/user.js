@@ -3,7 +3,7 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-const secretToken = require('../config.js')
+const config = require('../config.js')
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -46,11 +46,11 @@ const userSchema = new mongoose.Schema({
     virtuals: true
   },
   toJSON: {
-    virtuals: true 
+    virtuals: true
   }
 })
 
-// una relacion entre dos Schemas, no lo guarda, es virtual 
+// una relacion entre dos Schemas, no lo guarda, es virtual
 userSchema.virtual('todos', {
   ref: 'Todo',
   localField: '_id',
@@ -89,7 +89,7 @@ userSchema.statics.findByCredentials = function(email, password) {
 
 userSchema.methods.generateToken = function() {
   const user = this
-  const token = jwt.sign({ _id: user._id.toString() }, secretToken.secret, { expiresIn: '7 days'})
+  const token = jwt.sign({ _id: user._id.toString() }, config.secret, { expiresIn: '7 days'})
   user.tokens = user.tokens.concat({ token })
   return new Promise(function( resolve, reject) {
     user.save().then(function(user){
@@ -110,12 +110,10 @@ userSchema.pre('save', function(next) {
       return next(error)
     })
   } else {
-    next()  
+    next()
   }
 })
 
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
-
-
